@@ -16,6 +16,7 @@ let queryElement = (element) => {
   return document.querySelector(element);
 }
 
+//hide items not needed on front page
 let onlyDisplaySection = (element) => {
   let sections = document.querySelectorAll("section");
   Array.from(sections).forEach((userItem) => {
@@ -24,7 +25,7 @@ let onlyDisplaySection = (element) => {
   queryElement(element).classList.remove('hide');
 }
 
-//var startQuizBtn = document.querySelector('.start-quiz');
+//var startQuizBtn = document.querySelector('#start-quiz');
 //var highScore = document.querySelector('.high-score');
 //var timeElement = document.querySelector('#timer');
 
@@ -57,10 +58,33 @@ var questions = [
   },
 ];
 
+//Function to set question data
 let setQuestionData = () => {
   queryElement('#quizSection p').innerHTML = questions[questionCount].question;
   queryElement('#quizSection button:nth-of-type(1)').innerHTML = `1. ${questions[questionCount].options[0]}`;
+  queryElement('#quizSection button:nth-of-type(1)').innerHTML = `2. ${questions[questionCount].options[1]}`;
+  queryElement('#quizSection button:nth-of-type(1)').innerHTML = `3. ${questions[questionCount].options[2]}`;
+  queryElement('#quizSection button:nth-of-type(1)').innerHTML = `4. ${questions[questionCount].options[3]}`;
 }
+
+//Time realted events for the quiz
+let quizTimer = () => {
+  if (time > 0) {
+    time = time - 1;
+    queryElement('#time').innerHTML = time;
+  } else {
+    clearInterval(clock);
+    queryElement('#score').innerHTML = score;
+    onlyDisplaySection("#complete");
+  }
+}
+let clock;
+queryElement("#start-quiz").addEventListener("click", () => {
+  //call above function to set Initial data in questionHolder section
+  setQuestionData();
+  onlyDisplaySection("#quizSection");
+  clock = setInterval(quizTimer, 1000);
+});
 
 
 /*function countdown() {
@@ -70,6 +94,6 @@ let setQuestionData = () => {
       timeElement.textContent = 'Time: ' + startTime;
 
     }
-  }, 1000)*/
-}
+  }, 1000)
+}*/
 })
