@@ -1,99 +1,197 @@
 document.addEventListener('DOMContentLoaded', (event) => {
-// Initial variables
-const initialTime = 75;
-let time = 75;
-let score = 0;
-let questionCount = 0;
-let timeset;
-let answers = document.querySelectorAll('#quizSection button')
 
-//Sets array then if local storage exists it populates it into the array of records.
-let recordsArray = [];
-// Retrieve data if it exists or keep empty array otherwise.
-(localStorage.getItem('recordsArray')) ? recordsArray = JSON.parse(localStorage.getItem('recordsArray')): recordsArray = [];
+	const initialTime = 100;
+	let time = 100;
+	let score = 0;
+	let questionCount = 0;
+	let timeset;
+	let answers = document.querySelectorAll('#quizSection button');
 
-let queryElement = (element) => {
-  return document.querySelector(element);
-}
 
-//hide items not needed on front page
-let onlyDisplaySection = (element) => {
-  let sections = document.querySelectorAll("section");
-  Array.from(sections).forEach((userItem) => {
-    userItem.classList.add('hide');
-  });
-  queryElement(element).classList.remove('hide');
-}
+	let recordsArray = [];
+	(localStorage.getItem('recordsArray')) ? recordsArray = JSON.parse(localStorage.getItem('recordsArray')): recordsArray = [];
 
-//var startQuizBtn = document.querySelector('#start-quiz');
-//var highScore = document.querySelector('.high-score');
-//var timeElement = document.querySelector('#timer');
+	let queryElement = (element) => {
+		return document.querySelector(element);
+	}
+
+	let onlyDisplaySection = (element) => {
+		let sections = document.querySelectorAll("section");
+		Array.from(sections).forEach((userItem) => {
+			userItem.classList.add('hide');
+		});
+		queryElement(element).classList.remove('hide');
+	}
+
+	let recordsHtmlReset = () => {
+		queryElement('#highScores div').innerHTML = "";
+		var i = 1;
+		recordsArray.sort((a, b) => b.score - a.score);
+		Array.from(recordsArray).forEach(check =>
+		{
+			var scores = document.createElement("div");
+			scores.innerHTML = i + ". " + check.initialRecord + " - " + check.score;
+			queryElement('#highScores div').appendChild(scores);
+			i = i + 1
+		});
+		i = 0;
+		Array.from(answers).forEach(answer => {
+			answer.classList.remove('disable');
+		});
+	}
+
+
+	let setQuestionData = () => {
+		queryElement('#quizSection p').innerHTML = questions[questionCount].question;
+		queryElement('#quizSection button:nth-of-type(1)').innerHTML = `1. ${questions[questionCount].options[0]}`;
+		queryElement('#quizSection button:nth-of-type(2)').innerHTML = `2. ${questions[questionCount].options[1]}`;
+		queryElement('#quizSection button:nth-of-type(3)').innerHTML = `3. ${questions[questionCount].options[2]}`;
+		queryElement('#quizSection button:nth-of-type(4)').innerHTML = `4. ${questions[questionCount].options[3]}`;
+	}
+
+	let quizUpdate = (answerCopy) => {
+		queryElement('#scoreIndicator p').innerHTML = answerCopy;
+		queryElement('#scoreIndicator').classList.remove('invisible', scoreIndicator());
+		Array.from(answers).forEach(answer =>
+		{
+			answer.classList.add('disable');
+		});
+
+		setTimeout(() => {
+			if (questionCount === questions.length) {
+				onlyDisplaySection("#complete");
+				time = 0;
+				queryElement('#time').innerHTML = time;
+			} else {
+				setQuestionData();
+				Array.from(answers).forEach(answer => {
+					answer.classList.remove('disable');
+				});
+			}
+		}, 1000);
+	}
+
+	let myTimer = () => {
+		if (time > 0) {
+			time = time - 1;
+			queryElement('#time').innerHTML = time;
+		} else {
+			clearInterval(clock);
+			queryElement('#score').innerHTML = score;
+			onlyDisplaySection("#complete");
+		}
+	}
+
+	let clock;
+	queryElement(".start-quiz").addEventListener("click", (e) => {
+		setQuestionData();
+		onlyDisplaySection("#quizSection");
+		clock = setInterval(myTimer, 1000);
+	});
+
+	let scoreIndicator = () => {
+		clearTimeout(timeset);
+		timeset = setTimeout(() => {
+		    queryElement('#scoreIndicator').classList.add('invisible');
+		}, 1000);
+	}
+
+	Array.from(answers).forEach(check => {
+		check.addEventListener('click', function (event) {
+			if (this.innerHTML.substring(3, this.length) === questions[questionCount].answer) {
+				score = score + 1;
+				questionCount = questionCount + 1;
+				quizUpdate("Correct");
+			}else{
+				time = time - 10;
+				questionCount = questionCount + 1;
+				quizUpdate("Wrong");
+			}
+		});
+	});
+
+	let errorIndicator = () => {
+		clearTimeout(timeset);
+		timeset = setTimeout(() => {
+			queryElement('#errorIndicator').classList.add('invisible');
+		}, 3000);
+	}
+
+	queryElement("#records button").addEventListener("click", () => {
+		let initialsRecord = queryElement('#initials').value;
+		if (initialsRecord === ''){
+			queryElement('#errorIndicator p').innerHTML = "You need at least 1 character";
+			queryElement('#errorIndicator').classList.remove('invisible', errorIndicator());
+		} else if (initialsRecord.match(/[[A-Za-z]/) === null) {
+			queryElement('#errorIndicator p').innerHTML = "Only letters for initials allowed.";
+			queryElement('#errorIndicator').classList.remove('invisible', errorIndicator());
+		} else if (initialsRecord.length > 5) {
+			queryElement('#errorIndicator p').innerHTML = "Maximum of 5 characters allowed.";
+			queryElement('#errorIndicator').classList.remove('invisible', errorIndicator());
+		} else {
+			recordsArray.push({
+				"initialRecord": initialsRecord,
+				"score": score
+			});
+			localStorage.setItem('recordsArray', JSON.stringify(recordsArray));
+			queryElement('#highScores div').innerHTML = '';
+			onlyDisplaySection("#highScores");
+			recordsHtmlReset();
+			queryElement("#initials").value = '';
+		}
+	});
+
+	queryElement("#clearScores").addEventListener("click", () => {
+		recordsArray = [];
+		queryElement('#highScores div').innerHTML = "";
+		localStorage.removeItem('recordsArray');
+	});
+
+	queryElement("#reset").addEventListener("click", () => {
+		time = initialTime;
+		score = 0;
+		questionCount = 0;
+		onlyDisplaySection("#main-font");
+	});
+
+	queryElement("#scores").addEventListener("click", (e) => {
+		e.preventDefault();
+		clearInterval(clock);
+		queryElement('#time').innerHTML = 0;
+		time = initialTime;
+		score = 0;
+		questionCount = 0;
+		onlyDisplaySection("#highScores");
+		recordsHtmlReset();
+	});
+
+});
 
 //Quiz Questions
 var questions = [
-  {
-    question: "Inside which HTML element do we put the JavaScript?",
-    options: ["<script>", "<js>", "<javascript>", "<scripting>"],
-    answer: "<script>"
-  },
-  {
-    question: "How does a FOR loop start?",
-    options: ["for (i <=5; i++)", "for i=1 to 5", "for (i=0; i <=5; i++)", "for (i=0; i<=5)"],
-    answer: "for (i=0; i <=5; i++)"
-  },
-  {
-    question: "How can you add a comment in a JavaScript?",
-    options: ["<!this is a comment-->", "//This is a comment", "'This is a comment", "$This is a comment"],
-    answer: "//This is a comment"
-  },
-  {
-    question: "What is the correct way to write a JavaScript array?",
-    options: ["var colors = {'red', 'green', 'blue'}", "var colors = ['red', 'green', 'blue']", "var colors = 'red', 'green', 'blue'", "var colors = ['1=red', '2=green', '3=blue']"],
-    answer: "var colors = ['red', 'green', 'blue']"
-  },
-  {
+    {
+      question: "Inside which HTML element do we put the JavaScript?",
+      options: ["script", "js", "javascript", "scripting"],
+      answer: "script"
+    },
+    {
+      question: "How does a FOR loop start?",
+      options: ["for (i <=5; i++)", "for i=1 to 5", "for (i=0; i <=5; i++)", "for (i=0; i<=5)"],
+      answer: "for (i=0; i <=5; i++)"
+    },
+    {
+      question: "How can you add a comment in a JavaScript?",
+      options: ["*!this is a comment--*", "//This is a comment", "'This is a comment", "$This is a comment"],
+      answer: "//This is a comment"
+    },
+    {
+      question: "What is the correct way to write a JavaScript array?",
+      options: ["var colors = {'red', 'green', 'blue'}", "var colors = ['red', 'green', 'blue']", "var colors = 'red', 'green', 'blue'", "var colors = ['1=red', '2=green', '3=blue']"],
+      answer: "var colors = ['red', 'green', 'blue']"
+    },
+    {
     question: "How do you find the number with the highest value of x and y?",
     options: ["Math.ceil(x,y)", "top(x,y)", "ceil(x,y)", "Math.max(x,y)"],
     answer: "Math.max(x,y)"
-  },
-];
-
-//Function to set question data
-let setQuestionData = () => {
-  queryElement('#quizSection p').innerHTML = questions[questionCount].question;
-  queryElement('#quizSection button:nth-of-type(1)').innerHTML = `1. ${questions[questionCount].options[0]}`;
-  queryElement('#quizSection button:nth-of-type(1)').innerHTML = `2. ${questions[questionCount].options[1]}`;
-  queryElement('#quizSection button:nth-of-type(1)').innerHTML = `3. ${questions[questionCount].options[2]}`;
-  queryElement('#quizSection button:nth-of-type(1)').innerHTML = `4. ${questions[questionCount].options[3]}`;
-}
-
-//Time realted events for the quiz
-let quizTimer = () => {
-  if (time > 0) {
-    time = time - 1;
-    queryElement('#time').innerHTML = time;
-  } else {
-    clearInterval(clock);
-    queryElement('#score').innerHTML = score;
-    onlyDisplaySection("#complete");
-  }
-}
-let clock;
-queryElement("#start-quiz").addEventListener("click", () => {
-  //call above function to set Initial data in questionHolder section
-  setQuestionData();
-  onlyDisplaySection("#quizSection");
-  clock = setInterval(quizTimer, 1000);
-});
-
-
-/*function countdown() {
-  var startTime = 75;
-  var timeInterval = setInterval(function () {
-      startTime--; {
-      timeElement.textContent = 'Time: ' + startTime;
-
-    }
-  }, 1000)
-}*/
-})
+    },
+  ];

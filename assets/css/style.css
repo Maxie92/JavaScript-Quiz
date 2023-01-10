@@ -2,7 +2,7 @@
     box-sizing: border-box;
   }
 
-.header {
+header {
     font-family: 'Trebuchet MS', Arial, sans-serif;
     margin: 0 auto;
     color: #b99095;
@@ -22,14 +22,7 @@ button {
     cursor:pointer;
   }
 
-  .header div {
-    margin-right: 5px;
-    margin-top: 15px;
-    float: right;
-    font-size: 20px;
-}
-
-.header div {
+#header div {
     margin-right: 5px;
     margin-top: 15px;
     float: right;
@@ -42,26 +35,26 @@ body {
     justify-content: center;
 }
 
-main {
-    margin: 25px;
-}
-.main-font {
+
+#main-font {
+    padding-top: 5px;
     padding-left: 400px;
     padding-bottom: 15px;
     font-size: 25px;
     color: #b5e5cf
 }
 
-p {
-    padding-left: 175px;
+.words {
+    margin-left: -175px;
     padding-right: 175px;
+    padding-top: 15px;
     padding-bottom: 15px;
     font-size: medium;
     color: #3d5b59;
 }
 
 .start-quiz {
-    margin-left: 500px; 
+    margin-left: 75px; 
     font-size: medium; 
 }
 
