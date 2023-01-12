@@ -182,8 +182,8 @@ var questions = [
       answer: "Math.max(x,y)"
     },
 	{
-	  question: "How does a FOR loop start?",
-	  options: ["for (i=0; i <=5; i++)","for (i <=5; i++)", "for i=1 to 5", "for (i=0; i<=5)"],
-	  answer: "for (i=0; i <=5; i++)"
+	  question: "Java Script entities start with ____________ and end with ______________",
+	  options: ["Semicolon, colon", "Semicolon, Ampersand", "Ampersand, colon", "Ampersand, semicolon"],
+	  answer: "Ampersand, semicolon"
 	},
   ];
