@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', (event) => {
 
+	//variables used
 	const initialTime = 100;
 	let time = 100;
 	let score = 0;
@@ -15,6 +16,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		return document.querySelector(element);
 	}
 
+
 	let onlyDisplaySection = (element) => {
 		let sections = document.querySelectorAll("section");
 		Array.from(sections).forEach((userItem) => {
@@ -22,7 +24,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		});
 		queryElement(element).classList.remove('hide');
 	}
-
+ //records highScore
 	let recordsHtmlReset = () => {
 		queryElement('#highScores div').innerHTML = "";
 		var i = 1;
@@ -40,7 +42,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		});
 	}
 
-
+//This will allow you to filter through the questions
 	let setQuestionData = () => {
 		queryElement('#quizSection p').innerHTML = questions[questionCount].question;
 		queryElement('#quizSection button:nth-of-type(1)').innerHTML = `1. ${questions[questionCount].options[0]}`;
@@ -57,6 +59,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 			answer.classList.add('disable');
 		});
 
+		//returns the a score of correct questions
 		setTimeout(() => {
 			if (questionCount === questions.length) {
 				onlyDisplaySection("#complete");
@@ -81,7 +84,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 			onlyDisplaySection("#complete");
 		}
 	}
-
+//begins quiz
 	let clock;
 	queryElement(".start-quiz").addEventListener("click", (e) => {
 		setQuestionData();
@@ -95,7 +98,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		    queryElement('#scoreIndicator').classList.add('invisible');
 		}, 1000);
 	}
-
+//rule for what happens if an answer is right or wrong
 	Array.from(answers).forEach(check => {
 		check.addEventListener('click', function (event) {
 			if (this.innerHTML.substring(3, this.length) === questions[questionCount].answer) {
@@ -110,23 +113,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		});
 	});
 
-	let errorIndicator = () => {
-		clearTimeout(timeset);
-		timeset = setTimeout(() => {
-			queryElement('#errorIndicator').classList.add('invisible');
-		}, 3000);
-	}
-
+	//set expectations for inserting intials
 	queryElement("#records button").addEventListener("click", () => {
 		let initialsRecord = queryElement('#initials').value;
 		if (initialsRecord === ''){
 			queryElement('#errorIndicator p').innerHTML = "You need at least 1 character";
 			queryElement('#errorIndicator').classList.remove('invisible', errorIndicator());
-		} else if (initialsRecord.match(/[[A-Za-z]/) === null) {
-			queryElement('#errorIndicator p').innerHTML = "Only letters for initials allowed.";
-			queryElement('#errorIndicator').classList.remove('invisible', errorIndicator());
-		} else if (initialsRecord.length > 5) {
-			queryElement('#errorIndicator p').innerHTML = "Maximum of 5 characters allowed.";
 			queryElement('#errorIndicator').classList.remove('invisible', errorIndicator());
 		} else {
 			recordsArray.push({
@@ -175,11 +167,6 @@ var questions = [
       answer: "script"
     },
     {
-      question: "How does a FOR loop start?",
-      options: ["for (i <=5; i++)", "for i=1 to 5", "for (i=0; i <=5; i++)", "for (i=0; i<=5)"],
-      answer: "for (i=0; i <=5; i++)"
-    },
-    {
       question: "How can you add a comment in a JavaScript?",
       options: ["*!this is a comment--*", "//This is a comment", "'This is a comment", "$This is a comment"],
       answer: "//This is a comment"
@@ -190,8 +177,13 @@ var questions = [
       answer: "var colors = ['red', 'green', 'blue']"
     },
     {
-    question: "How do you find the number with the highest value of x and y?",
-    options: ["Math.ceil(x,y)", "top(x,y)", "ceil(x,y)", "Math.max(x,y)"],
-    answer: "Math.max(x,y)"
+      question: "How do you find the number with the highest value of x and y?",
+      options: ["Math.ceil(x,y)", "top(x,y)", "ceil(x,y)", "Math.max(x,y)"],
+      answer: "Math.max(x,y)"
     },
+	{
+	  question: "How does a FOR loop start?",
+	  options: ["for (i=0; i <=5; i++)","for (i <=5; i++)", "for i=1 to 5", "for (i=0; i<=5)"],
+	  answer: "for (i=0; i <=5; i++)"
+	},
   ];

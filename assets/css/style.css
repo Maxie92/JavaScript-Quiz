@@ -13,6 +13,10 @@ header {
     background-color: #3d5b59
     }
 
+button :hover {
+    background-color: #3d5b59;
+}
+
 button {
     background: color #b5e5cf;;
     color:#b99095;
@@ -21,6 +25,10 @@ button {
     border-radius: 5px;
     cursor:pointer;
   }
+
+button :hover {
+    background-color: #3d5b59;
+}
 
 #header div {
     margin-right: 5px;
@@ -61,3 +69,64 @@ body {
 .hide {
     display:none;
   }
+
+#quizSection {
+    padding-left: 175px;
+    padding-right: 150px;
+    padding-top: 75px;
+    padding-bottom: 15px;
+    font-size: medium;
+    color: #3d5b59;
+    justify-content: center;
+}
+
+
+#question {
+    margin-left: 200px;
+    margin-right: 200px;
+    margin-bottom: 15px;
+}
+
+#quizSection button {
+    margin-left: 350px;
+}
+
+#complete h1 {
+    padding-top: 5px;
+    padding-left: 400px;
+    padding-bottom: 15px;
+    font-size: 25px;
+    color: #b5e5cf
+}
+
+#complete p {
+    padding-left: 400px;
+    padding-top: 15px;
+    padding-bottom: 5px;
+    font-size: medium;
+    color: #3d5b59;
+}
+
+#initials {
+    margin-left: 350px
+}
+
+#highScores h1 {
+    padding-top: 5px;
+    padding-left: 400px;
+    padding-bottom: 15px;
+    font-size: 25px;
+    color: #b5e5cf
+}
+
+#highScores div {
+    padding-left: 200px;
+    padding-top: 15px;
+    padding-bottom: 5px;
+    font-size: medium;
+    color: #3d5b59;
+}
+
+#highScores button {
+    margin-left: 250px;
+}
